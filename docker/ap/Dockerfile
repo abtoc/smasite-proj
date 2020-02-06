@@ -58,6 +58,6 @@ RUN set -x \
  && useradd -u 10000 -g abtc -m abtc \
  && mkdir -p /var/www/html && chmod 777 /var/www/html && chown abtc:abtc /var/www/html \
  && apt install -y less && mkdir /run/php && chmod 777 /run/php
-USER abtc
+USER abtc:abtc
 WORKDIR /var/www/html
 CMD ["/usr/sbin/php-fpm7.4", "--nodaemonize"]
