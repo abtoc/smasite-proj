@@ -1,19 +1,19 @@
 version: '2'
 services: 
-    web:
-        build: ./docker/web
-        ports:
-            - "8000:80"
-        depends_on:
-            - ap
-        volumes:
-            - ./docker/web/default.conf:/etc/nginx/conf.d/default.conf
-
     ap:
         build: ./docker/ap
-        user: "10000:10000"
         ports:
+            - "8000:80"
             - "9100-9110:9100-9110"
         volumes:
             - ./app:/var/www/html
-            - ./docker/ap/www.conf:/etc/php/7.4/fpm/pool.d/www.conf
+            - ./docker/ap/supervisor.d:/etc/supervisor/conf.d
+            - ./docker/ap/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./docker/ap/php-fpm/www.conf:/etc/php/7.4/fpm/pool.d/www.conf
+            - redis:/var/lib/redis
+volumes:
+    redis:
+        driver: local
+    mysql:
+        driver: local
+

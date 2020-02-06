@@ -7,9 +7,6 @@ RUN set -x \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && apt purge -y tzdata \
  && apt autoremove -y
-# nginx & redis & supervisor.d install
-RUN set -x \
- && apt install -y nginx redis supervisor
 # PHP7.3 install
 RUN set -x \
  && apt install -y software-properties-common \
@@ -60,12 +57,7 @@ RUN set -x \
  && groupadd -g 10000 abtc \
  && useradd -u 10000 -g abtc -m abtc \
  && mkdir -p /var/www/html && chmod 777 /var/www/html && chown abtc:abtc /var/www/html \
- && apt install -y less sudo && mkdir /run/php && chmod 777 /run/php \ 
- && gpasswd -a abtc sudo
-RUN set -x \
- && rm -rf /var/log/nginx/access.log && ln -s /dev/stdout /var/log/nginx/access.log \
- && rm -rf /var/log/nginx/error.log  && ln -s /dev/stderr /var/log/nginx/error.log
-RUN set -x \
- && rm -rf /var/log/redis/redis-server.log && ln -s /dev/stdout /var/log/redis/redis-server.log
+ && apt install -y less && mkdir /run/php && chmod 777 /run/php
+USER abtc:abtc
 WORKDIR /var/www/html
-CMD ["/usr/bin/supervisord", "-n"]
+CMD ["/usr/sbin/php-fpm7.4", "--nodaemonize"]
