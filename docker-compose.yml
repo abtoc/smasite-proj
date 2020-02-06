@@ -1,5 +1,11 @@
 version: '2'
 services: 
+    web:
+        build: ./docker/web
+        ports:
+            - "8000:80"
+        depends_on:
+            - ap
     ap:
         build: ./docker/ap
         user: "1000:1000"
