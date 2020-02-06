@@ -3,7 +3,7 @@ services:
     web:
         build: ./docker/web
         ports:
-            - "8000:8000"
+            - "8000:80"
         depends_on:
             - ap
         volumes:
