@@ -58,7 +58,7 @@ RUN set -x \
 # Development Environment
 RUN set -x \
  && groupadd -g 10000 abtc \
- && useradd -u 10000 -g abtc -m abtc \
+ && useradd -u 10000 -g abtc -s /bin/bash -m abtc \
  && mkdir -p /var/www/html && chmod 777 /var/www/html && chown abtc:abtc /var/www/html \
  && apt install -y less sudo && mkdir /run/php && chmod 777 /run/php \ 
  && gpasswd -a abtc sudo
