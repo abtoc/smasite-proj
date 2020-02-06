@@ -1,0 +1,10 @@
+version: '2'
+services: 
+    ap:
+        build: ./docker/ap
+        user: "1000:1000"
+        ports:
+            - "9100-9110:9100-9110"
+        volumes:
+            - ./app:/var/www/html
+            - ./docker/ap/www.conf:/etc/php/7.4/fpm/pool.d/www.conf
