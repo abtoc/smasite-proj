@@ -3,10 +3,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN set -x \
  && apt update \
  && apt upgrade -y \
+ && apt-get install -y locales \
+ && locale-gen ja_JP.UTF-8 \
  && apt install -y tzdata \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && apt purge -y tzdata \
  && apt autoremove -y
+ENV LANG=ja_jp.UTF-8
+ENV TZ=Asia/Tokyo
 # nginx & redis & supervisor.d install
 RUN set -x \
  && apt install -y nginx redis supervisor
@@ -66,6 +70,7 @@ RUN set -x \
  && rm -rf /var/log/nginx/access.log && ln -s /dev/stdout /var/log/nginx/access.log \
  && rm -rf /var/log/nginx/error.log  && ln -s /dev/stderr /var/log/nginx/error.log
 RUN set -x \
- && rm -rf /var/log/redis/redis-server.log && ln -s /dev/stdout /var/log/redis/redis-server.log
+ && rm -rf /var/log/redis/redis-server.log && ln -s /dev/stdout /var/log/redis/redis-server.log \
+ && sed -i -e 's/^daemonize yes$/daemonize no/g' /etc/redis/redis.conf
 WORKDIR /var/www/html
 CMD ["/usr/bin/supervisord", "-n"]
