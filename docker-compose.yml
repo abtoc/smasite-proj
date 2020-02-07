@@ -16,4 +16,5 @@ volumes:
         driver: local
     mysql:
         driver: local
-
+    minio:
+        driver: local
