@@ -1,0 +1,38 @@
+version: '2'
+services: 
+    ap:
+        build: ./docker/ap
+        ports:
+            - "8000:80"
+            - "9100-9110:9100-9110"
+        depends_on:
+            - db
+            - storage
+        volumes:
+            - ./app:/var/www/html
+            - ./docker/ap/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./docker/ap/php-fpm/www.conf:/etc/php/7.4/fpm/pool.d/www.conf
+            - redis:/var/lib/redis
+    db:
+        build: ./docker/db
+        env_file: .env.docker
+        ports:
+            - "4040:80"
+        volumes:
+            - ./docker/db/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+            - ./docker/db/init.db:/init.db
+            -  mariadb:/var/lib/mysql
+    storage:
+        build: ./docker/storage
+        env_file: .env.docker
+        ports:
+            - "9000:9000"
+        volumes: 
+            - ./docker/storage/minio_start.sh:/minio_start.sh
+volumes:
+    redis:
+        driver: local
+    mariadb:
+        driver: local
+    minio:
+        driver: local
