@@ -5,6 +5,9 @@ services:
         ports:
             - "8000:80"
             - "9100-9110:9100-9110"
+        depends_on:
+            - db
+            - storage
         volumes:
             - ./app:/var/www/html
             - ./docker/ap/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -19,7 +22,13 @@ services:
             - ./docker/db/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
             - ./docker/db/init.db:/init.db
             -  mariadb:/var/lib/mysql
-
+    storage:
+        build: ./docker/storage
+        env_file: .env.docker
+        ports:
+            - "9000:9000"
+        volumes: 
+            - ./docker/storage/minio_start.sh:/minio_start.sh
 volumes:
     redis:
         driver: local
