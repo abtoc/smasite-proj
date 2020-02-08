@@ -3,6 +3,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN set -x \
  && apt update \
  && apt upgrade -y \
+ && apt-get install -y locales \
+ && locale-gen ja_JP.UTF-8 \
  && apt install -y tzdata \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && apt purge -y tzdata \
@@ -17,11 +19,37 @@ RUN set -x \
  && echo "mariadb-server-10.2 mysql-server/root_password password 'unused'" | debconf-set-selections \
  && echo "mariadb-server-10.2 mysql-server/root_password_again password 'unused'" | debconf-set-selections \
  && apt install -y mariadb-server-10.2
-RUN mkdir /var/run/mysqld && chown mysql:mysql /var/run/mysqld 
-# && sed -i -e 's/127\.0\.0\.1/0\.0\.0\.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
-RUN mkdir /initdb.d
-RUN rm -rf /var/lib/mysql/*
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-CMD ["/entrypoint.sh"]
-
+RUN mkdir /var/run/mysqld && chown mysql:mysql /var/run/mysqld \
+ && mkdir /initdb.d \
+ && rm -rf /var/lib/mysql/*
+# phpmyadmin
+# node.js install
+RUN set -x \
+ && apt install -y curl \
+ && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+ && apt install -y nodejs \
+ && npm install -g yarn
+RUN set -x\
+ && apt install -y apache2 curl \
+ && apt install -y php-mbstring php-gettext libapache2-mod-php php-mysql php-curl php-zip \
+ && phpenmod mbstring \
+ && a2enmod rewrite \
+ && curl -kLRs https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && chmod +x /usr/local/bin/composer \
+ && rm -rf /var/www/html \
+ && cd /var/www \
+ && composer create-project phpmyadmin/phpmyadmin html \
+ && cd /var/www/html \
+ && composer update --no-dev \
+ && yarn install \
+ && chown -R www-data:www-data /var/www/html
+# supervisor
+RUN apt install -y supervisor
+# Development Evironment
+COPY mariadb_start.sh /mariadb_start.sh
+COPY phpmyadmin_start.sh /phpmyadmin_start.sh
+RUN chmod +x /mariadb_start.sh \
+ && chmod +x /phpmyadmin_start.sh
+COPY supervisor.d/10-mariadb.conf /etc/supervisor/conf.d/
+COPY supervisor.d/20-phpmyadmin.conf /etc/supervisor/conf.d/
+#COPY phpmyadmin/sql.lib.php /usr/share/phpmyadmin/libraries/sql.lib.php
+CMD ["/usr/bin/supervisord", "-n"]
