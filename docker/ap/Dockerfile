@@ -57,8 +57,7 @@ RUN set -x \
 RUN set -x \
  && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
  && apt install -y nodejs \
- && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
- && apt update && apt install -y yarn
+ && npm install -g yarn
 # Development Environment
 RUN set -x \
  && groupadd -g 10000 abtc \
