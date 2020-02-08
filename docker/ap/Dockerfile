@@ -72,5 +72,8 @@ RUN set -x \
 RUN set -x \
  && rm -rf /var/log/redis/redis-server.log && ln -s /dev/stdout /var/log/redis/redis-server.log \
  && sed -i -e 's/^daemonize yes$/daemonize no/g' /etc/redis/redis.conf
+COPY supervisor.d/10-redis.conf /etc/supervisor/conf.d/
+COPY supervisor.d/20-php-fpm.conf /etc/supervisor/conf.d/
+COPY supervisor.d/30-nginx.conf /etc/supervisor/conf.d/
 WORKDIR /var/www/html
 CMD ["/usr/bin/supervisord", "-n"]
