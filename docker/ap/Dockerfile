@@ -21,7 +21,7 @@ RUN set -x \
  && apt update
 RUN set -x \
  && apt install -y zip unzip \
- && apt install -y php7.4 php7.4-fpm php7.4-mysql php7.4-zip php7.4-gd \
+ && apt install -y php7.4 php7.4-fpm php7.4-mysql php7.4-sqlite3 php7.4-zip php7.4-gd \
  && apt install -y mcrypt libmcrypt-dev \
  && apt install -y php7.4-mbstring php7.4-xml \
  && apt install -y php7.4-curl php7.4-json \
