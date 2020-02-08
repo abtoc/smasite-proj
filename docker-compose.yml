@@ -12,6 +12,7 @@ services:
             - ./app:/var/www/html
             - ./docker/ap/nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./docker/ap/php-fpm/www.conf:/etc/php/7.4/fpm/pool.d/www.conf
+            - ./docker/ap/redis/redis.conf:/etc/redis/redis.conf
             - redis:/var/lib/redis
     db:
         build: ./docker/db

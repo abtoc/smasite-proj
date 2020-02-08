@@ -43,7 +43,8 @@ RUN set -x \
  && echo | pecl install redis \
  && echo 'extension=redis.so' > /etc/php/7.4/mods-available/redis.ini \
  && ln -s /etc/php/7.4/mods-available/redis.ini /etc/php/7.4/cli/conf.d/50-redis.ini \
- && ln -s /etc/php/7.4/mods-available/redis.ini /etc/php/7.4/fpm/conf.d/50-redis.ini
+ && ln -s /etc/php/7.4/mods-available/redis.ini /etc/php/7.4/fpm/conf.d/50-redis.ini \
+ && chown -R redis:redis /var/lib/redis
 # apt clean
 RUN set -x \
  && apt clean
@@ -69,7 +70,6 @@ RUN set -x \
  && rm -rf /var/log/nginx/access.log && ln -s /dev/stdout /var/log/nginx/access.log \
  && rm -rf /var/log/nginx/error.log  && ln -s /dev/stderr /var/log/nginx/error.log
 RUN set -x \
- && rm -rf /var/log/redis/redis-server.log && ln -s /dev/stdout /var/log/redis/redis-server.log \
  && sed -i -e 's/^daemonize yes$/daemonize no/g' /etc/redis/redis.conf
 COPY supervisor.d/10-redis.conf /etc/supervisor/conf.d/
 COPY supervisor.d/20-php-fpm.conf /etc/supervisor/conf.d/
