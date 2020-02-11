@@ -29,7 +29,7 @@ services:
         ports:
             - "9000:9000"
         volumes: 
-            - ./docker/storage/minio_start.sh:/minio_start.sh
+            - minio:/var/lib/minio
 volumes:
     redis:
         driver: local
